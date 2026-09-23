@@ -1,0 +1,148 @@
+@page
+@using Roblox.Dto.Users
+@model Roblox.Website.Pages.Auth.Application
+
+@{
+    Layout = "Shared/_Layout";
+}
+
+@section MetaTags {
+    <title>Application</title>
+    <style>
+        .input-padding {
+            margin-top:  2rem;
+            margin-bottom:  2rem;
+        }
+
+        div.application-form-entry h4 {
+            width:  100%;
+            background:  rgb(33, 37, 41);
+            color:  #fff;
+            padding: .5rem 1rem;
+        }
+
+    </style>
+}
+
+@if (Model.showBannerForOldUsers)
+{
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-12">
+                <div class="alert alert-warning">
+                    <p class="mb-0"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+<div class="container mt-4 mb-4">
+    <div class="row">
+        <div class="col-12 col-xl-6 offset-xl-3 col-md-8 offset-md-2">
+            <div class="card card-body">
+                @if (Model.errorMessage != null)
+                {
+                    <div class="alert alert-danger">
+                        @Model.errorMessage
+                    </div>
+                }
+                         
+                <h3>Verify</h3>
+
+                @if (Model.application == null)
+                {
+                    
+                }
+
+                @if (Model.successMessage != null)
+                {
+                    <p class="text-success">@Model.successMessage</p>
+                }
+
+                @if (Model.application != null)
+                {
+                    <hr/>
+                    <p class="mt-4 mb-0">You submitted an application on @Model.application.createdAt.ToString("f") UTC.</p>
+                    <p class="mt-3 mb-0">Please reload page <span class="fw-bolder">@(Model.displayStatus)</span></p>
+                    @if (Model.application.status == UserApplicationStatus.Approved)
+                    {
+                        <p>Join URL: <a href="/auth/signup?applicationId=@Model.application.joinId">http://karblox.ru/auth/signup?applicationId=@Model.application.joinId</a></p>
+                    }
+                    @if (Model.application.status == UserApplicationStatus.Rejected)
+                    {
+                        <p>Rejection Reason: @(Model.application.rejectionReason ?? "No reason specified.")</p>
+                        <form method="post">
+                            <input type="hidden" name="deleteCurrentApplicationCookie" value="true"/>
+                            @Html.AntiForgeryToken()
+                            <input type="submit" class="btn btn-outline-primary" value="Create New Application"/>
+                        </form>
+                    }
+                    <p class="mt-4">Application ID: @Model.application.id</p>
+                }
+                else
+                {
+                    <form method="post">
+                        <div class="input-padding"></div>
+                        
+                        <div class="input-padding"></div>
+                        
+
+                        <div class="application-form-entry">
+                            <div class="stage-1">
+                            </div>
+                            
+                            <div class="input-padding"></div>
+                            
+                            <div class="stage-2">
+                                <h4>Roblox url</h4>
+                                <div class="p-2">
+                                    <p class="mb-0"></p>
+                                    <input placeholder="Roblox Profile URL" value="@Model.socialUrl" disabled="@Model.submitDisabled" type="text" class="form-control" name="socialUrl" maxlength="128"/>
+                                </div>
+                            </div>
+                            
+                            <div class="input-padding"></div>
+                            
+                            <div class="stage-3">
+                                <h4>put this in bio</h4>
+                                <div class="p-2">
+                                    <p class="mb-0"></p>
+                                    <div class="alert alert-primary mt-2 mb-2">
+                                        <p class="mb-0">@Model.verificationPhrase</p>
+                                    </div>
+                                    
+                                    <div class="mt-2">
+                                        <label>Code not working or getting filtered? </label>
+                                        <input type="submit" class="btn btn-outline-primary btn-sm" name="action" value="Get New Code"/>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="input-padding"></div>
+                            
+                            
+                            <div class="stage-4">
+                                <h4>Captcha</h4>
+                                <div class="p-2">
+                                    <p class="mb-0">We just have to make sure you aren't a robot.</p>
+                                    <div class="h-captcha mt-4" data-sitekey="@Model.siteKey" data-theme="light"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="stage-submit">
+                            <div class="input-padding"></div>
+                            <input type="submit" class="btn btn-primary mt-2" value="Submit Application"/>
+                            @Html.AntiForgeryToken()
+                        </div>
+                        
+                    </form>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://js.hcaptcha.com/1/api.js" async defer></script>

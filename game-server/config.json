@@ -1,0 +1,11 @@
+{
+    "rcc": "C:\\Users\\Nicolas\\Desktop\\services\\RCCService",
+    "rccexe": "RCCService.exe",
+    "authorization": "UwU",
+    "baseUrl": "https://DOMAIN",
+    "rccPort": 64989,
+    "port": 3040,
+    "websiteBotAuth": "UwU",
+    "thumbnailWebsocketPort": 3189,
+    "webhook": "UwU"
+}
